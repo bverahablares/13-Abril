@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>D3.js</title>
+  <style>
+    rect{
+      fill:#06B542;
+    }
+    rect:hover{
+      fill:#07A653;
+    }
+  </style>
+</head>
+<body>
+    <header>
+      <div class="collapse bg-light" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10 col-md-7 py-4">
+              <p><a href="https://d3js.org/" title="D3.js - Data-Driven Documents" target="_blank">D3.js</a> es una biblioteca de JavaScript que permite la manipulación eficiente de documentos basados en datos. Además, permite diseñar la interfaz visual más adecuada para la presentación de tales datos, usando HTML, CSS y <a href="https://developer.mozilla.org/es/docs/Web/SVG" target="_blank" title="SVG | MDN">SVG</a>.</p>
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+              <ul class="list-unstyled">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bitcoin.html">Bitcoin</a></li>
+                <li><a href="earthquakes.html">&rarr; Earthquakes</a></li>
+                <li><a href="titanic.html">Titanic</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-light bg-light box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
+            <strong>D3.js</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>  
+  <div class="container py-3">
+    <div class="row">
+      <div class="col-md-12 py-3">
+        <h1>D3.js + CSV</h1>
+      </div>
+      <div class="col-md-12 pt-2">
+      <p>Ahora vamos a buscar datos a un <a href="https://es.wikipedia.org/wiki/Valores_separados_por_comas">CSV</a>, alojado en un <a href="https://raw.githubusercontent.com/profesorfaco/dgp502_4/gh-pages/data/earthquakes.csv">repositorio de GitHub</a>; con esto voy a buscar el CSV a una URL que comienza con http<strong>s</strong>, así me evito <a href="https://developer.mozilla.org/es/docs/Seguridad/MixedContent/arreglar_web_con_contenido_mixto">bloqueos de contenido mixto</a>, y de paso me evito tener que instalar un servidor local, que es lo que tendría que hacer si es que quisiera consultar un archivo local.</p>
+      <p>Las dos primeras líneas del CSV que vamos a buscar se ven así:</p>
+<pre>
+<code>
+mag,location,alternative,date_utc,time_utc,latitude,longitude,references
+9.5,"Bio-Bio, Chile","Valdivia Earthquake",1960-05-22,19:11,-38.14,-73.41,"Kanamori & Anderson, 1975"
+…
+…
+…
+</code>
+</pre>
+
+<p>Cuando D3.js toma los datos de un CSV lo transforma en un arreglo, que almacena tantos objetos como filas:</p>
+
+<pre>
+<code>
+[
+  {
+    alternative:"Valdivia Earthquake"
+    date_utc:"1960-05-22"
+    latitude:"-38.14"
+    location:"Bio-Bio, Chile"
+    longitude:"-73.41"
+    mag:"9.5"
+    references:"Kanamori & Anderson, 1975"
+    time_utc:"19:11"
+  },
+  {…},
+  {…}…
+]
+</code>
+</pre>
+<p>Además, transforma la primera fila, que supone encabezado, en los denominadores de los pares dentro de cada objeto, pares que ordena alfabéticamente. Por esto corresponde ser cuidadoso con los nombres que se usen en el CSV: Deben evitar espacios, acentos y tildes.</p>
+
+<div id="aqui" class="border-bottom mb-4"></div>
+
+<p class="text-muted small">En caso les llame la atención que el terremoto de Valdivia tenga por ubicación a "Bio-Bio, Chile", corresponde recordar que la división regional, aún numerada, es "herencia" de la dictadura. <a href="https://es.wikipedia.org/wiki/Regiones_de_Chile">En 1960 las regiones eran otras</a>.</p>
+
+</div>
+</div>
+</div>
+<!--D3.js-->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+d3.csv("https://raw.githubusercontent.com/profesorfaco/dgp502_4/gh-pages/data/earthquakes.csv").then(function(data) { 
+
+console.log(data);
+
+d3.select("#aqui")
+    .selectAll("p") //quiere decir que pondré párrafo
+    .data(data)
+    .enter()
+    .append("p")
+    .html(function(d,i) { //es similar a un for va aumentando la i la fecha entrega solo el año
+    return i+1 + ".- En " + d.date_utc.substr(0, d.date_utc.indexOf('-')) + " hubo un terremoto de " + d.mag + "M en: <a href=\"" + "https://www.google.cl/maps/@" + d.latitude + "," + d.longitude + ",9z" + "\">" + d.location + "</a>" }); //se pone .html porque irá un vínculo que se verá como en html, no solo como texto 9z es el zoom \" quiere decir que la comilla está dentro del texto es una comilla entre comillas xD
+})//acá estoy cerrando la consulta por el CSV
+</script>
+<!-- jQuery primero, luego Popper.js, y finalmente Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

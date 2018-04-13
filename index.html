@@ -1,0 +1,90 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>D3.js</title>
+</head>
+<body>
+    <header>
+      <div class="collapse bg-light" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10 col-md-7 py-4">
+              <p><a href="https://d3js.org/" title="D3.js - Data-Driven Documents" target="_blank">D3.js</a> es una biblioteca de JavaScript que permite la manipulación eficiente de documentos basados en datos. Además, permite diseñar la interfaz visual más adecuada para la presentación de tales datos, usando HTML, CSS y <a href="https://developer.mozilla.org/es/docs/Web/SVG" target="_blank" title="SVG | MDN">SVG</a>.</p>
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+              <ul class="list-unstyled">
+                <li><a href="index.html">&rarr; Home</a></li>
+                <li><a href="bitcoin.html">Bitcoin</a></li>
+                <li><a href="earthquakes.html">Earthquakes</a></li>
+                <li><a href="titanic.html">Titanic</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-light bg-light box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
+            <strong>D3.js</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>  
+  <div class="container py-3">
+    <div class="row">
+      <div class="col-md-12 py-3">
+        <h1>D3.js + JSON</h1>
+      </div>
+      <div class="col-md-12 pt-2">
+      <p>La clase recién pasada les mostré un sitio web que ofrece, a través de una <a href="https://es.wikipedia.org/wiki/Interfaz_de_programaci%C3%B3n_de_aplicaciones">API</a>, datos económicos nacionales y actualizados. Para consultar por tales datos, basta con pedir <code>https://mindicador.cl/api/{lo que necesiten}</code>. Y lo que necesiten debería estar limitado a las siguientes opciones: <code>uf, ivp, dolar, dolar_intercambio, euro, ipc, utm, imacec, tpm, libra_cobre, tasa_desempleo, bitcoin</code></p>
+      <p>Si consulto <code> https://mindicador.cl/api/tasa_desempleo</code>, obtengo como respuesta un json con la siguiente estructura:</p>
+<pre>
+<code>
+{
+"version": "1.5.0",
+"autor": "mindicador.cl",
+"codigo": "Tasa Desempleo",
+"nombre": "Desempleo Observado ",
+"unidad_medida": "Porcentaje",
+"serie": […] //31 ítems
+}
+</code>
+</pre>
+<p>Usando D3.js, puedo ir por ese JSON y comenzar a trabajar con los 31 ítems dentro de serie.</p>
+
+<ul id="aqui" class="list-unstyled"></ul>
+<p><span id="max"></span><span id="min"></span></p> <!--las lineas van vacías porque d3 se encarga de mostrar las cosas en pantalla-->
+</div>
+</div>
+</div>
+<!--D3.js-->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+  d3.json("https://mindicador.cl/api/tasa_desempleo").then(function(data) {
+    var precios = d3.values(data.serie);
+    console.log(precios);
+    //Selecciono el elemento de identidad "aqui", luego todos los li que serán creados dentro suyo
+    d3.select("#aqui").selectAll("li").data(precios).enter() //crea cosas, en este caso crea un "li" (el de abajo xD)
+        .append("li")//este
+        .text(function(d) { return d.fecha.substr(0, d.fecha.indexOf('T')) + " → " + d.valor + "%"}); //d se refiere a data por la biblioteca d3 / la funcion de la fecha permite que se vea solo lo inicial del dato original hasta la letra "T" sino se vería el código de fecha completo 
+    //Busco el máximo valor en la serie
+    d3.select("#max") //#max es una funcion que busca todos los valores y arroja el máximo valor
+        .data(precios).text(d3.max(precios.map(function(d){return "La tasa de desempleo más alta fue " + d.valor+ "% (" + d.fecha.substr(0, d.fecha.indexOf('T')) + ")";})))
+    //Busco el menor valor en la serie
+    d3.select("#min") //#min es una funcion que busca todos los valores y arroja el minimo valor
+        .data(precios).text(d3.min(precios.map(function(d){return ", mientras que el desempleo más bajo fue " + d.valor+ "% (" + d.fecha.substr(0, d.fecha.indexOf('T')) + ")";})))
+  })
+</script>
+<!-- jQuery primero, luego Popper.js, y finalmente Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

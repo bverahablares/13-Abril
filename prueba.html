@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>D3.js</title>
+  <style>
+    rect{
+      fill:#06B542;
+    }
+    rect:hover{
+      fill:#07A653;
+    }
+  </style>
+</head>
+<body>
+    <header>
+      <div class="collapse bg-light" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10 col-md-7 py-4">
+              <p><a href="https://d3js.org/" title="D3.js - Data-Driven Documents" target="_blank">D3.js</a> es una biblioteca de JavaScript que permite la manipulación eficiente de documentos basados en datos. Además, permite diseñar la interfaz visual más adecuada para la presentación de tales datos, usando HTML, CSS y <a href="https://developer.mozilla.org/es/docs/Web/SVG" target="_blank" title="SVG | MDN">SVG</a>.</p>
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+              <ul class="list-unstyled">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bitcoin.html">Bitcoin</a></li>
+                <li><a href="earthquakes.html">Earthquakes</a></li>
+                <li><a href="titanic.html">&rarr; Titanic</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-light bg-light box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
+            <strong>D3.js</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>  
+  <div class="container py-3">
+    <div class="row">
+      <div class="col-md-12 py-3">
+        <h1>D3.js + CSV</h1>
+      </div>
+      <div class="col-md-12 pt-2">
+      <p>Titanic. <span id="totales"></span>. <span id="fallecieron"></span>.</p>
+      <div id="chart"></div>
+
+<div class="row">
+<div class="col">
+<div id="chart"></div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!--D3.js-->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+    var calculo = [
+      {name: 'muerto en 1ª', count: 80, color: '#635D68'},
+      {name: 'muerto en 2ª', count: 97, color: '#695D63'},
+      {name: 'muerto en 3ª', count: 372, color: '#69635D'},
+      {name: 'vivo en 1ª', count: 136, color: '#6314B7'},
+      {name: 'vivo en 2ª', count: 87, color: '#C3005D'},
+      {name: 'vivo en 3ª', count: 119, color: '#C25E20'},
+    ];
+    
+    var width = 500, height = 500, radius = 200;
+
+    var arc = d3.arc()
+      .outerRadius(radius - 50)
+      .innerRadius(100);
+
+    var pie = d3.pie()
+      .sort(null)
+      .value(function(d) {
+          return d.count;
+      });
+
+    var svg = d3.select('#chart').append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var g = svg.selectAll(".arc")
+      .data(pie(calculo))
+      .enter().append("g");    
+
+    g.append("path")
+      .attr("d", arc)
+      .style("fill", function(d,i) {
+        return d.data.color;
+      });
+
+
+
+  </script>
+</script>
+<!-- jQuery primero, luego Popper.js, y finalmente Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
